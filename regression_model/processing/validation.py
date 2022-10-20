@@ -29,7 +29,9 @@ def get_first_cabin(row):
         return np.nan
 
 
-def validate_inputs(*, input_data: pd.DataFrame) -> Tuple[pd.DataFrame, Optional[dict]]:
+def validate_inputs(
+    *, input_data: pd.DataFrame, training=False
+) -> Tuple[pd.DataFrame, Optional[dict]]:
     """Check model inputs for unprocessable values."""
 
     # convert syntax error field names (beginning with numbers)
@@ -42,36 +44,43 @@ def validate_inputs(*, input_data: pd.DataFrame) -> Tuple[pd.DataFrame, Optional
     input_data["cabin"] = input_data["cabin"].apply(get_first_cabin)
 
     # extract features
-    validated_data = input_data[config.model_config.features].copy()
+    if training:
+        relevant_data = input_data[
+            config.model_config.features + [config.model_config.target]
+        ]
+    else:
+        relevant_data = input_data[config.model_config.features].copy()
 
     # in some cases we might want to check for nan's here etc
     errors = None
 
     try:
         # replace numpy nans so that pydantic can validate
-        test = MultipleTitanicDataInputs(
-            inputs=validated_data.replace({np.nan: None}).to_dict(orient="records")
+        temp = MultipleTitanicDataInputs(
+            inputs=relevant_data.replace({np.nan: None}).to_dict(orient="records")
         )
+        validated_data = pd.DataFrame([model.dict() for model in temp.inputs])
     except ValidationError as error:
         errors = error.json()
+
+    if not training:
+        validated_data.drop(columns=["survived"], inplace=True)
 
     return validated_data, errors
 
 
 # pclass,survived,sex,age,sibsp,parch,fare,cabin,embarked,title
 class TitanicDataInputSchema(BaseModel):
-    passengerid: Optional[int]
-    pclass: int
-    name: Optional[str]
-    sex: str
-    age: float
-    sibsp: int
-    parch: int
-    ticket: Optional[str]
-    fare: float
+    pclass: Union[int, None]
+    sex: Union[str, None]
+    age: Union[float, None]
+    sibsp: Union[int, None]
+    parch: Union[int, None]
+    fare: Union[float, None]
     cabin: Union[str, None]
-    embarked: str
+    embarked: Union[str, None]
     title: Optional[str]
+    survived: Optional[int]
 
 
 class MultipleTitanicDataInputs(BaseModel):

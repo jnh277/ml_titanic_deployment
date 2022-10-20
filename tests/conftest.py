@@ -6,4 +6,8 @@ from regression_model.processing.data_manager import load_dataset
 
 @pytest.fixture()
 def sample_input_data():
-    return load_dataset(file_name=config.app_config.test_data_file)
+    data = load_dataset(
+        file_name=config.app_config.training_data_file
+    )  # this should probably not be train data
+    # file but need to know the survival to do my test_predictions
+    return data

@@ -7,8 +7,10 @@ def test_extract_letter_transformer(sample_input_data):
     transformer = ExtractLetterTransformer(variables=config.model_config.cabin)
 
     # when
-    subject = transformer.fit(sample_input_data)
+    transformer.fit(sample_input_data)
+    subject = transformer.transform(sample_input_data)
+    cabins = subject["cabin"].tolist()
 
-    for row in subject.iterrows():
-        if (row is not None) and (row != ""):
-            assert len(row) <= 1
+    for cabin in cabins:
+        if isinstance(cabin, str):
+            assert len(cabin) <= 1
