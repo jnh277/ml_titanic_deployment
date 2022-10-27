@@ -9,7 +9,7 @@ from setuptools import find_packages, setup
 NAME = 'titanic-regression-model'
 DESCRIPTION = "Learning project for deploying machine learning code on titanic data set."
 URL = "https://github.com/jnh277/ml_titanic_deployment"
-EMAIL = "christopher.samiullah@protonmail.com"
+EMAIL = "johannes.n.hendriks@gmail.com"
 AUTHOR = "Johannes Hendriks"
 REQUIRES_PYTHON = ">=3.7.0"
 
