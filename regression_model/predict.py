@@ -26,9 +26,9 @@ def make_prediction(
             X=validated_data[config.model_config.features]
         )
         results = {
-            "predictions": predictions,
-            "version": _version,
-            "errors": errors,
+            "predictions": predictions.tolist(),
+            "model_version": _version,
+            "validation_errors": errors,
         }
 
     return results
