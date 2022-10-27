@@ -1,5 +1,3 @@
-import math
-
 import numpy as np
 import pandas as pd
 from fastapi.testclient import TestClient
@@ -23,5 +21,5 @@ def test_make_prediction(client: TestClient, sample_input_data: pd.DataFrame) ->
     prediction_data = response.json()
     assert prediction_data["predictions"]
     assert prediction_data["validation_errors"] is None
-    assert prediction_data["predictions"][0]==0     # should do more of these
+    assert prediction_data["predictions"][0] == 0  # should do more of these
     # assert math.isclose(prediction_data["predictions"][0], 113422, rel_tol=100)

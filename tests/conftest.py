@@ -1,10 +1,11 @@
-import pytest
 from typing import Generator
 
+import pytest
+from fastapi.testclient import TestClient
+
+from app.main import app
 from regression_model.config.core import config
 from regression_model.processing.data_manager import load_dataset
-from app.main import app
-from fastapi.testclient import TestClient
 
 
 @pytest.fixture()
@@ -14,6 +15,7 @@ def sample_input_data():
     )  # this should probably not be train data
     # file but need to know the survival to do my test_predictions
     return data
+
 
 @pytest.fixture()
 def client() -> Generator:
