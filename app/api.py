@@ -28,9 +28,9 @@ def health() -> dict:
 
 
 @api_router.post("/predict", response_model=schemas.PredictionResults, status_code=200)
-async def predict(input_data: schemas.MultiplePVDataInputs) -> Any:
+async def predict(input_data: schemas.MultipleTitanicDataInputs) -> Any:
     """
-    Make PV forecasts with the regression model
+    Make titanic survival predictions with the regression model
     """
 
     input_df = pd.DataFrame(jsonable_encoder(input_data.inputs))
