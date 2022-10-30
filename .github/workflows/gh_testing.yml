@@ -3,29 +3,28 @@ name: Test package
 on: [push]
 
 jobs:
-  jobs1:
-    build:
-      runs-on: ubuntu-latest
-      strategy:
-        max-parallel: 4
-        matrix:
-          python-version: [3.10]
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 4
+      matrix:
+        python-version: [3.10]
 
-      steps:
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install tox
+      run: pip install tox
+    - name: Run tox
+      run: tox
+
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
       - uses: actions/checkout@v2
-      - name: Install tox
-        run: pip install tox
-      - name: Run tox
-        run: tox
-  job2:
-    needs: job1
-    build:
-      runs-on: ubuntu-latest
-      steps:
-        - uses: actions/checkout@v2
-        - uses: akhileshns/heroku-deploy@v3.12.12 # This is the action
-          with:
-            heroku_api_key: ${{secrets.HEROKU_API_KEY}}
-            heroku_app_name: ${{secrets.HEROKU_APP_NAME}}
-            heroku_email: ${{secrets.HEROKU_API_KEY}}
-            usedocker: true
+      - uses: akhileshns/heroku-deploy@v3.12.12 # This is the action
+        with:
+          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+          heroku_app_name: ${{secrets.HEROKU_APP_NAME}}
+          heroku_email: ${{secrets.HEROKU_API_KEY}}
+          usedocker: true
